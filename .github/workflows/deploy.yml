@@ -122,6 +122,18 @@ jobs:
           DOMAIN=$(echo "${{ secrets.DEPLOY_DOMAIN }}" | tr -d ' \t\r\n')
           echo "Verifying account deletion page https://$DOMAIN/account-deletion";
           curl -fsSI "https://$DOMAIN/account-deletion" || { echo "::error title=Account deletion page unreachable::curl exited $?"; exit 1; }
+      - name: Verify contact page
+        run: |
+          set -e
+          DOMAIN=$(echo "${{ secrets.DEPLOY_DOMAIN }}" | tr -d ' \t\r\n')
+          echo "Verifying contact page https://$DOMAIN/contact";
+          curl -fsSI "https://$DOMAIN/contact" || { echo "::error title=Contact page unreachable::curl exited $?"; exit 1; }
+      - name: Verify about page
+        run: |
+          set -e
+          DOMAIN=$(echo "${{ secrets.DEPLOY_DOMAIN }}" | tr -d ' \t\r\n')
+          echo "Verifying about page https://$DOMAIN/about";
+          curl -fsSI "https://$DOMAIN/about" || { echo "::error title=About page unreachable::curl exited $?"; exit 1; }
       - name: Verify deploy-check file
         run: |
           DOMAIN=$(echo "${{ secrets.DEPLOY_DOMAIN }}" | tr -d ' \t\r\n')

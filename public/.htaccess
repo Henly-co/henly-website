@@ -1,13 +1,24 @@
-# Apache SPA fallback for Namecheap or similar shared hosting
+# Apache/LiteSpeed SPA fallback for Namecheap shared hosting
 <IfModule mod_rewrite.c>
+  Options -MultiViews
   RewriteEngine On
   RewriteBase /
+
+  # Do not rewrite API or media endpoints
+  RewriteRule ^(api|media)/ - [L]
+
   # Allow existing files and directories
   RewriteCond %{REQUEST_FILENAME} -f [OR]
   RewriteCond %{REQUEST_FILENAME} -d
   RewriteRule ^ - [L]
+
   # Fallback all other requests to index.html with 200
-  RewriteRule . /index.html [L]
+  RewriteRule ^ index.html [L]
+</IfModule>
+
+# Fallback for environments without mod_rewrite: serve SPA on 404
+<IfModule !mod_rewrite.c>
+  ErrorDocument 404 /index.html
 </IfModule>
 
 # Security headers (optional basic)
