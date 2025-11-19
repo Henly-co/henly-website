@@ -37,6 +37,14 @@ jobs:
       - name: Build project
         run: npm run build
 
+      - name: Ensure .htaccess is included in dist
+        run: |
+          if [ -f public/.htaccess ]; then
+            cp -v public/.htaccess dist/.htaccess;
+          else
+            echo "No public/.htaccess found";
+          fi
+
       - name: Create deploy check file
         run: |
           echo "deploy-check $(date -u +%Y-%m-%dT%H:%M:%SZ)" > dist/deploy-check.txt
