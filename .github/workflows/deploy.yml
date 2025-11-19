@@ -63,6 +63,34 @@ jobs:
         run: |
           echo "Dist directory listing:";
           ls -al dist
+      - name: Preflight DNS & connectivity check
+        id: preflight
+        run: |
+          HOST="${{ secrets.FTP_SERVER }}"
+          echo "Checking DNS resolution for $HOST";
+          if command -v dig >/dev/null 2>&1; then
+            dig +short "$HOST" || true
+          fi
+          getent hosts "$HOST" || true
+          echo "Attempting TCP connection tests (ports 21 FTP, 990 FTPS implicit, 22 SFTP)";
+          for PORT in 21 990 22; do
+            (echo > /dev/tcp/$HOST/$PORT) >/dev/null 2>&1 && echo "Port $PORT: OPEN" || echo "Port $PORT: closed or filtered";
+          done
+          RESOLVED_IP=$(getent hosts "$HOST" | awk '{print $1}' | head -n1)
+          if [ -z "$RESOLVED_IP" ]; then
+            echo "::error title=DNS resolution failed::Host '$HOST' did not resolve. Verify secrets.FTP_SERVER matches your cPanel Server Name or a valid hostname (e.g. serverXX.web-hosting.com) or add an A record for a custom subdomain (ftp.yourdomain).";
+            exit 1
+          fi
+          echo "Resolved IP: $RESOLVED_IP"
+          echo "resolved_ip=$RESOLVED_IP" >> $GITHUB_OUTPUT
+      - name: Advice if FTP fails
+        if: always()
+        run: |
+          echo "If the upcoming FTP step fails with ENOTFOUND again:"
+          echo "1. Re-check secret FTP_SERVER (current resolves to: ${{ steps.preflight.outputs.resolved_ip || 'UNRESOLVED' }})"
+          echo "2. Try protocol 'sftp' (preferred) by changing protocol: sftp in workflow."
+          echo "3. For Namecheap shared hosting you can find Server Name in cPanel > General Information. Use that as FTP_SERVER."
+          echo "4. Ensure any firewall or FTP access restrictions are disabled or allow GitHub Actions (GitHub outbound IP ranges)."
       - name: Deploy via FTP to Namecheap
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
