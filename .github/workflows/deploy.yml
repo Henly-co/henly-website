@@ -95,7 +95,21 @@ jobs:
           echo "2. Try protocol 'sftp' (preferred) by changing protocol: sftp in workflow."
           echo "3. For Namecheap shared hosting you can find Server Name in cPanel > General Information. Use that as FTP_SERVER."
           echo "4. Ensure any firewall or FTP access restrictions are disabled or allow GitHub Actions (GitHub outbound IP ranges)."
+      - name: Raw FTP / Explicit TLS banner test
+        run: |
+          HOST="${{ secrets.FTP_SERVER }}"
+          echo "Testing plain FTP banner (10s timeout)";
+          (echo QUIT | timeout 10 nc -v "$HOST" 21 || true) 2>&1 | sed 's/password/****/Ig' || true
+          echo "Testing explicit FTPS (STARTTLS) banner";
+          if command -v openssl >/dev/null 2>&1; then
+            (echo QUIT | timeout 15 openssl s_client -starttls ftp -servername "$HOST" -connect "$HOST:21" || true) 2>&1 | head -n 40
+          else
+            echo "openssl not available to test STARTTLS";
+          fi
+          echo "If no banner lines appeared above, server may be filtering or requires passive mode/TLS immediately. Proceeding to deploy step with ftps."
       - name: Deploy via FTP to Namecheap
+        id: deploy_ftps
+        continue-on-error: true
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_SERVER }}
@@ -103,12 +117,40 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           server-dir: /public_html/
           local-dir: dist/
-          # Start with plain FTP for initial connectivity; upgrade to ftps or sftp after success
-          protocol: ftp
+          protocol: ftps
+          log-level: verbose
+          timeout: 60000
           exclude: |
             **/.git*
             **/.github/**
             **/node_modules/**
+      - name: FTPS failed, retrying with plain FTP
+        if: failure() && steps.deploy_ftps.outcome == 'failure'
+        id: deploy_ftp
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          server-dir: /public_html/
+          local-dir: dist/
+          protocol: ftp
+          log-level: verbose
+          timeout: 60000
+          exclude: |
+            **/.git*
+            **/.github/**
+            **/node_modules/**
+      - name: Set protocol used output
+        if: always()
+        run: |
+          if [ "${{ steps.deploy_ftps.outcome }}" = "success" ]; then
+            echo "protocol_used=ftps" >> $GITHUB_OUTPUT
+          elif [ "${{ steps.deploy_ftp.outcome }}" = "success" ]; then
+            echo "protocol_used=ftp" >> $GITHUB_OUTPUT
+          else
+            echo "protocol_used=none" >> $GITHUB_OUTPUT
+          fi
 
       - name: Record deploy timestamp
         run: echo "deployed_at=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> $GITHUB_ENV
