@@ -93,6 +93,8 @@ jobs:
             **/.git*
             **/.github/**
             **/node_modules/**
+            # Never delete or upload over manually managed media assets
+            media/**
 
       - name: Record deploy timestamp
         run: echo "deployed_at=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> $GITHUB_ENV
@@ -104,16 +106,26 @@ jobs:
     steps:
       - name: Verify root page
         run: |
-          curl -I https://${{ secrets.DEPLOY_DOMAIN }}/ || exit 1
+          set -e
+          DOMAIN=$(echo "${{ secrets.DEPLOY_DOMAIN }}" | tr -d ' \t\r\n')
+          echo "Verifying root page https://$DOMAIN/";
+          curl -fsSI "https://$DOMAIN/" || { echo "::error title=Root page unreachable::curl exited $?"; exit 1; }
       - name: Verify privacy page
         run: |
-          curl -I https://${{ secrets.DEPLOY_DOMAIN }}/privacy || exit 1
+          set -e
+          DOMAIN=$(echo "${{ secrets.DEPLOY_DOMAIN }}" | tr -d ' \t\r\n')
+          echo "Verifying privacy page https://$DOMAIN/privacy";
+          curl -fsSI "https://$DOMAIN/privacy" || { echo "::error title=Privacy page unreachable::curl exited $?"; exit 1; }
       - name: Verify account deletion page
         run: |
-          curl -I https://${{ secrets.DEPLOY_DOMAIN }}/account-deletion || exit 1
+          set -e
+          DOMAIN=$(echo "${{ secrets.DEPLOY_DOMAIN }}" | tr -d ' \t\r\n')
+          echo "Verifying account deletion page https://$DOMAIN/account-deletion";
+          curl -fsSI "https://$DOMAIN/account-deletion" || { echo "::error title=Account deletion page unreachable::curl exited $?"; exit 1; }
       - name: Verify deploy-check file
         run: |
-          STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://${{ secrets.DEPLOY_DOMAIN }}/deploy-check.txt)
+          DOMAIN=$(echo "${{ secrets.DEPLOY_DOMAIN }}" | tr -d ' \t\r\n')
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" "https://$DOMAIN/deploy-check.txt")
           echo "deploy-check status: $STATUS"
           if [ "$STATUS" != "200" ]; then echo "::error title=Missing deploy-check.txt::Could not access deployed file"; exit 1; fi
       - name: Summary

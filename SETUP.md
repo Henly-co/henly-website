@@ -163,7 +163,7 @@ The portal promotes your mobile app where users can:
 ## 📞 Support
 
 For questions or issues, contact:
-- Email: info@henly.pk
+- Email: info@henly.co
 - Phone: +92 300 1234567
 
 ---

@@ -61,8 +61,8 @@ export default function PrivacyPolicyContent({ language, activeSection }: Privac
             'Account Registration:',
             '• Full name',
             '• Phone number (for SMS-based OTP verification)',
-            '• Email address',
-            '• Password (securely hashed)',
+            '• Email address (optional for support and notifications)',
+            '• No password is required; login is via OTP only',
             '• Business type/role (Farmer, Wholesaler, Feed Supplier, Pharma Supplier, Transporter, Trader)',
             '• Business name and details',
             '',
@@ -89,8 +89,8 @@ export default function PrivacyPolicyContent({ language, activeSection }: Privac
             'اکاؤنٹ رجسٹریشن:',
             '• مکمل نام',
             '• فون نمبر (SMS-based OTP تصدیق کے لیے)',
-            '• ای میل ایڈریس',
-            '• پاس ورڈ (محفوظ طریقے سے ہیش کیا گیا)',
+            '• ای میل ایڈریس (اختیاری — سپورٹ اور نوٹیفکیشنز کے لیے)',
+            '• پاس ورڈ درکار نہیں؛ لاگ ان صرف OTP کے ذریعے ہوتا ہے',
             '• کاروباری قسم/کردار (کاشتکار، تھوک فروش، فیڈ سپلائر، فارما سپلائر، ٹرانسپورٹر، تاجر)',
             '• کاروبار کا نام اور تفصیلات',
             '',
@@ -348,8 +348,8 @@ export default function PrivacyPolicyContent({ language, activeSection }: Privac
           contentEn: [
             'We implement multiple layers of security:',
             '• Encryption: Data transmitted via SSL/TLS encryption',
-            '• Authentication: Firebase secure authentication with Play Integrity API verification',
-            '• Password Protection: Passwords are hashed, never stored in plain text',
+            '• Authentication: OTP-based login via Firebase Authentication with Play Integrity API verification',
+            '• Passwords: We do not use passwords for login; OTP is used instead',
             '• Access Controls: Restricted access to user data on a need-to-know basis',
             '• Regular Updates: Security patches and updates regularly deployed',
             '• Firewalls: Protected servers with firewall protection',
@@ -480,7 +480,7 @@ export default function PrivacyPolicyContent({ language, activeSection }: Privac
       contentEn: [
         'To exercise any of your data rights (access, correction, deletion, portability):',
         '',
-        'Email: henlycoo@gmail.com',
+            'Email: info@henly.co',
         'Phone: +92-301-09000903',
         'Mailing Address: Henly, Kotli Azad Kashmir, Pakistan',
         '',
@@ -489,7 +489,7 @@ export default function PrivacyPolicyContent({ language, activeSection }: Privac
       contentUr: [
         'اپنے کسی بھی ڈیٹا کے حقوق (رسائی، اصلاح، حذفی، نقل و حرکت) کو استعمال کرنے کے لیے:',
         '',
-        'ای میل: henlycoo@gmail.com',
+  'ای میل: info@henly.co',
         'فون: +92-301-09000903',
         'ڈاک کا پتہ: Henly, Kotli Azad Kashmir, Pakistan',
         '',
@@ -736,7 +736,7 @@ export default function PrivacyPolicyContent({ language, activeSection }: Privac
       contentEn: [
         'For privacy concerns or to exercise your rights, contact us:',
         '',
-        'Email: henlycoo@gmail.com',
+            'Email: info@henly.co',
         'Phone: +92-301-09000903',
         'Mailing Address: Henly, Kotli Azad Kashmir, Pakistan',
         '',
@@ -746,7 +746,7 @@ export default function PrivacyPolicyContent({ language, activeSection }: Privac
       contentUr: [
         'رازداری کے خدشات کے لیے یا اپنے حقوق کو استعمال کرنے کے لیے ہمسے رابطہ کریں:',
         '',
-        'ای میل: henlycoo@gmail.com',
+  'ای میل: info@henly.co',
         'فون: +92-301-09000903',
         'ڈاک کا پتہ: Henly, Kotli Azad Kashmir, Pakistan',
         '',
@@ -761,7 +761,7 @@ export default function PrivacyPolicyContent({ language, activeSection }: Privac
       contentEn: [
         'If you have concerns about our privacy practices:',
         '',
-        '1. Contact Us First: Email henlycoo@gmail.com with details',
+  '1. Contact Us First: Email info@henly.co with details',
         '2. Resolution Discussion: We will work with you to resolve the issue',
         '3. Escalation: If unresolved, you can file a complaint with:',
         '   - Pakistan Telecommunication Authority (PTA)',
@@ -770,7 +770,7 @@ export default function PrivacyPolicyContent({ language, activeSection }: Privac
       contentUr: [
         'اگر آپ کو ہماری رازداری کی طریقوں کے بارے میں خدشات ہیں:',
         '',
-        '1. پہلے ہمسے رابطہ کریں: تفصیلات کے ساتھ henlycoo@gmail.com پر ای میل کریں',
+  '1. پہلے ہمسے رابطہ کریں: تفصیلات کے ساتھ info@henly.co پر ای میل کریں',
         '2. حل کی بحث: ہم مسئلے کو حل کرنے کے لیے آپ کے ساتھ کام کریں گے',
         '3. بڑھتی ہوئی کارروائی: اگر حل نہ ہو تو آپ یہاں شکایت درج کر سکتے ہیں:',
         '   - پاکستان کی ٹیلی کمیونیکیشن اتھارٹی (PTA)',
@@ -880,7 +880,7 @@ export default function PrivacyPolicyContent({ language, activeSection }: Privac
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a
-              href="mailto:henlycoo@gmail.com"
+              href="mailto:info@henly.co"
               className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-[#8b0000] text-white rounded-lg hover:bg-[#7a0000] transition-colors font-semibold"
             >
               <Mail className="w-5 h-5" />

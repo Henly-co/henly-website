@@ -31,13 +31,13 @@ export default function PrivacyPolicy() {
               </h1>
               <p className="text-lg text-gray-300 mb-4">
                 {isUrdu 
-                  ? 'آخری اپ ڈیٹ: اکتوبر 24، 2025' 
-                  : 'Last Updated: October 24, 2025'}
+                  ? 'آخری اپ ڈیٹ: نومبر 19، 2025' 
+                  : 'Last Updated: November 19, 2025'}
               </p>
               <p className="text-gray-400 max-w-2xl mx-auto">
                 {isUrdu
-                  ? 'Henly کے ساتھ آپ کی معلومات کی حفاظت کو سمجھیں'
-                  : 'Understand how we protect your information at Henly'}
+                  ? 'Henly آپ کے ڈیٹا کا کنٹرولر ہے اور ہم آپ کی معلومات کی حفاظت کو یقینی بناتے ہیں'
+                  : 'Henly is the data controller. Learn how we protect and process your information.'}
               </p>
             </div>
           </div>

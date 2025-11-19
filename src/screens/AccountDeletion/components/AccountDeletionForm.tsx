@@ -15,6 +15,7 @@ export default function AccountDeletionForm({ language }: AccountDeletionFormPro
     phone: '',
     reason: '',
     confirmDeletion: false,
+    website: '', // honeypot (bots often fill this)
   });
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -52,42 +53,40 @@ export default function AccountDeletionForm({ language }: AccountDeletionFormPro
     }
 
     try {
-      // In production, this would send to a backend API
-      // For now, we'll simulate an email request
-      await fetch('https://api.example.com/request-account-deletion', {
+      const res = await fetch('/api/request-account-deletion.php', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           email: formData.email,
           phone: formData.phone,
           reason: formData.reason,
+          website: formData.website,
           timestamp: new Date().toISOString(),
         }),
-      }).catch(() => {
-        // Since we're using a placeholder API, we'll treat this as success for demo
-        throw new Error('Demo mode - email would be sent to support');
       });
 
-      // Simulate success after a brief delay (even though the request "fails" for demo)
-      setTimeout(() => {
-        setFormState('success');
-        setFormData({ email: '', phone: '', reason: '', confirmDeletion: false });
-      }, 1000);
+      if (!res.ok) {
+        const t = await res.text().catch(() => '');
+        throw new Error(t || 'Request failed');
+      }
+
+      // Success
+      setFormState('success');
+          setFormData({ email: '', phone: '', reason: '', confirmDeletion: false, website: '' });
     } catch {
-      // In demo mode, still show success (error is expected in this flow)
-      setTimeout(() => {
-        setFormState('success');
-        setFormData({ email: '', phone: '', reason: '', confirmDeletion: false });
-      }, 1000);
+      setErrorMessage(
+        isUrdu
+          ? 'سروس دستیاب نہیں ہے۔ براہ کرم براہ راست info@henly.co پر ای میل کریں۔'
+          : 'Service unavailable. Please email info@henly.co directly.'
+      );
+      setFormState('error');
     }
   };
 
   return (
     <div className="bg-white">
       {/* Information Box */}
-      <div className="bg-blue-50 border-l-4 border-blue-500 p-6 rounded-lg mb-8">
+  <div className="bg-blue-50 border-l-4 border-blue-500 p-6 rounded-lg mb-8">
         <h2 className={`text-lg font-semibold text-blue-900 mb-3 ${isUrdu ? 'font-urdu' : ''}`}>
           {isUrdu ? 'معلومات' : 'Important Information'}
         </h2>
@@ -112,8 +111,8 @@ export default function AccountDeletionForm({ language }: AccountDeletionFormPro
             <span className="text-blue-500 mt-1">•</span>
             <span>
               {isUrdu
-                ? 'ہم آپ کے ای میل پر تصدیق بھیجیں گے'
-                : 'We will send a confirmation email to verify your request'}
+                ? 'ہم آپ کی درخواست کا جائزہ لے کر ضرورت پڑنے پر ای میل کے ذریعے رابطہ کریں گے'
+                : 'We will review your request and contact you via email if needed'}
             </span>
           </li>
           <li className="flex items-start gap-2">
@@ -264,8 +263,8 @@ export default function AccountDeletionForm({ language }: AccountDeletionFormPro
           </h2>
           <p className={`text-gray-700 mb-6 max-w-md mx-auto ${isUrdu ? 'font-urdu' : ''}`}>
             {isUrdu
-              ? 'ہم نے آپ کی اکاؤنٹ حذفی کی درخواست وصول کر لی ہے۔ براہ کرم اپنی ای میل میں تصدیق کریں۔'
-              : 'We have received your account deletion request. Please check your email to confirm.'}
+              ? 'ہم نے آپ کی اکاؤنٹ حذفی کی درخواست وصول کر لی ہے۔ ہماری ٹیم اس کا جائزہ لے گی اور ضرورت پڑنے پر info@henly.co سے آپ سے رابطہ کرے گی۔'
+              : 'We have received your account deletion request. Our team will review it and contact you from info@henly.co if needed.'}
           </p>
 
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-8 text-left">
@@ -273,18 +272,34 @@ export default function AccountDeletionForm({ language }: AccountDeletionFormPro
               <strong>{isUrdu ? 'اگلی اقدام:' : 'Next Steps:'}</strong>
             </p>
             <ol className={`text-sm text-blue-800 space-y-2 mt-2 ${isUrdu ? 'font-urdu text-right' : ''}`}>
-              <li>1. {isUrdu ? 'اپنی ای میل میں تصدیق کا لنک تلاش کریں' : 'Check your email for a confirmation link'}</li>
-              <li>2. {isUrdu ? 'لنک کو کھول کر تصدیق مکمل کریں' : 'Click the link to confirm the deletion'}</li>
-              <li>3. {isUrdu ? 'آپ کا اکاؤنٹ 30 دن میں حذف ہوگا' : 'Your account will be deleted within 30 days'}</li>
-              <li>4. {isUrdu ? 'آپ کو تصدیقی ای میل موصول ہوگی' : 'You will receive a confirmation email'}</li>
+              <li>1. {isUrdu ? 'ہم آپ کی درخواست کا جائزہ لیں گے' : 'We will review your request'}</li>
+              <li>2. {isUrdu ? 'ضرورت پڑنے پر ہم info@henly.co سے آپ سے رابطہ کریں گے' : 'If needed, we will contact you from info@henly.co'}</li>
+              <li>3. {isUrdu ? 'آپ کی اکاؤنٹ حذفی 30 دن کے اندر مکمل ہو جائے گی' : 'Your account deletion will be completed within 30 days'}</li>
             </ol>
           </div>
 
           <p className={`text-gray-600 text-sm ${isUrdu ? 'font-urdu' : ''}`}>
             {isUrdu
-              ? 'اگر آپ کو ای میل نہیں ملا تو براہ کرم henlycoo@gmail.com سے رابطہ کریں'
-              : 'If you do not receive an email, please contact henlycoo@gmail.com'}
+              ? 'کسی مدد یا تفصیل کے لیے، info@henly.co پر ای میل کریں'
+              : 'For any help or details, email us at info@henly.co'}
           </p>
+
+          {/* Support & Navigation */}
+          <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
+            <a
+              href="mailto:info@henly.co"
+              className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-[#8b0000] text-white rounded-lg hover:bg-[#7a0000] transition-colors font-semibold"
+            >
+              <Mail className="w-5 h-5" />
+              {isUrdu ? 'سپورٹ سے رابطہ کریں' : 'Contact Support'}
+            </a>
+            <a
+              href="/"
+              className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-white border-2 border-[#8b0000] text-[#8b0000] rounded-lg hover:bg-[#8b0000]/5 transition-colors font-semibold"
+            >
+              {isUrdu ? 'ہوم پر واپس جائیں' : 'Back to Home'}
+            </a>
+          </div>
         </div>
       )}
     </div>

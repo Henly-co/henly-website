@@ -92,8 +92,8 @@ export default function Footer({ language }: FooterProps) {
             <ul className="space-y-3">
               <li className="flex items-center gap-3">
                 <Mail className="w-5 h-5 text-[#8b0000]" />
-                <a href="mailto:henlycoo@gmail.com" className="text-gray-400 hover:text-[#8b0000] transition-colors">
-                  henlycoo@gmail.com
+                <a href="mailto:info@henly.co" className="text-gray-400 hover:text-[#8b0000] transition-colors">
+                  info@henly.co
                 </a>
               </li>
               <li className="flex items-center gap-3">

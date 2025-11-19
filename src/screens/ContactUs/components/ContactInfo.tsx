@@ -12,10 +12,10 @@ export default function ContactInfo({ language }: ContactInfoProps) {
       icon: Mail,
       titleEn: 'Email',
       titleUr: 'ای میل',
-      contentEn: 'henlycoo@gmail.com',
-      contentUr: 'henlycoo@gmail.com',
+  contentEn: 'info@henly.co',
+  contentUr: 'info@henly.co',
       linkType: 'email',
-      link: 'mailto:henlycoo@gmail.com',
+  link: 'mailto:info@henly.co',
     },
     {
       icon: Phone,
