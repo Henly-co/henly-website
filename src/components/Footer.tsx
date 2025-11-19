@@ -19,18 +19,18 @@ export default function Footer({ language }: FooterProps) {
           <div className={`md:col-span-2 ${isUrdu ? 'font-urdu' : ''}`} dir={isUrdu ? 'rtl' : 'ltr'}>
             <Link to="/#home" className="relative inline-block mb-4" aria-label="Go to Home">
               <div className="absolute inset-0 bg-red-600 opacity-10 rounded-xl blur-lg"></div>
-              <img
-                src={footerLogo}
-                alt="Henly Logo"
-                className="h-12 w-auto relative z-10"
-              />
+              <div className="relative z-10 bg-white rounded-xl p-2 shadow-md inline-flex items-center justify-center">
+                <img
+                  src={footerLogo}
+                  alt="Henly Logo"
+                  className="h-12 w-auto"
+                />
+              </div>
             </Link>
             <p className="text-gray-400 leading-relaxed mb-4">
               {t.aboutDesc}
             </p>
-            <p className="text-gray-400 leading-relaxed mb-4">
-              <Link to="/" className="underline hover:text-[#8b0000]">Henly Poultry</Link> — Pakistan's poultry marketplace for eggs, chicken, day-old chicks, feed and services.
-            </p>
+            {/* Removed marketing tagline per request */}
             <div className="flex items-center gap-2 text-gray-400">
               <MapPin className="w-4 h-4" />
               <span className="text-sm">
@@ -68,21 +68,7 @@ export default function Footer({ language }: FooterProps) {
                   {isUrdu ? 'اکاؤنٹ حذفی' : 'Account Deletion'}
                 </Link>
               </li>
-              <li>
-                <Link to="/#home" className="text-gray-400 hover:text-[#8b0000] transition-colors">
-                  {t.termsConditions}
-                </Link>
-              </li>
-              <li>
-                <Link to="/#education" className="text-gray-400 hover:text-[#8b0000] transition-colors">
-                  {t.faq}
-                </Link>
-              </li>
-              <li>
-                <Link to="/#services" className="text-gray-400 hover:text-[#8b0000] transition-colors">
-                  {t.careers}
-                </Link>
-              </li>
+              {/* Removed Terms & Conditions, FAQ, Careers links per request */}
             </ul>
           </div>
 
