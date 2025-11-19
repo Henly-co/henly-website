@@ -63,30 +63,22 @@ jobs:
           name: site-dist
           path: dist
 
+      - name: Validate required secrets
+        run: |
+          # GitHub Actions does not allow dynamic interpolation of secrets inside loops directly.
+          # We explicitly test each required secret.
+          missing=0
+          [ -z "${{ secrets.FTP_SERVER }}" ] && echo "::error title=Missing secret::FTP_SERVER is not set" && missing=1 || true
+          [ -z "${{ secrets.FTP_USERNAME }}" ] && echo "::error title=Missing secret::FTP_USERNAME is not set" && missing=1 || true
+          [ -z "${{ secrets.FTP_PASSWORD }}" ] && echo "::error title=Missing secret::FTP_PASSWORD is not set" && missing=1 || true
+          [ -z "${{ secrets.DEPLOY_DOMAIN }}" ] && echo "::error title=Missing secret::DEPLOY_DOMAIN is not set" && missing=1 || true
+          if [ $missing -ne 0 ]; then echo "Missing required secrets"; exit 1; fi
+
       - name: List artifact contents
         run: |
           echo "Dist directory listing:";
           ls -al dist
       - name: Deploy via FTP to Namecheap
-        id: deploy_ftps
-        continue-on-error: true
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-        with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          server-dir: /public_html/
-          local-dir: dist/
-          protocol: ftps
-          log-level: verbose
-          timeout: 60000
-          exclude: |
-            **/.git*
-            **/.github/**
-            **/node_modules/**
-      - name: FTPS failed, retrying with plain FTP
-        if: failure() && steps.deploy_ftps.outcome == 'failure'
-        id: deploy_ftp
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_SERVER }}
@@ -101,16 +93,6 @@ jobs:
             **/.git*
             **/.github/**
             **/node_modules/**
-      - name: Set protocol used output
-        if: always()
-        run: |
-          if [ "${{ steps.deploy_ftps.outcome }}" = "success" ]; then
-            echo "protocol_used=ftps" >> $GITHUB_OUTPUT
-          elif [ "${{ steps.deploy_ftp.outcome }}" = "success" ]; then
-            echo "protocol_used=ftp" >> $GITHUB_OUTPUT
-          else
-            echo "protocol_used=none" >> $GITHUB_OUTPUT
-          fi
 
       - name: Record deploy timestamp
         run: echo "deployed_at=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> $GITHUB_ENV
