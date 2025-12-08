@@ -198,6 +198,9 @@ UA: Mozilla/5.0...
 - Reply-To header set to user's email for easy response
 - From header set to `noreply@henly.co` for deliverability
 
+**Note on Mail Failure Handling**:
+The existing PHP endpoint returns `{ "ok": true, "warning": "mail_failed" }` even when mail() fails. This is an intentional UX decision to not block users when the mail server has issues. Admins should check cPanel Email Trace or mail logs if emails don't arrive. For production, consider implementing proper error handling with retry logic or SMTP library.
+
 **States**:
 - `idle` - Initial state
 - `submitted` - During form submission (shows spinner)
@@ -285,7 +288,10 @@ $sent = @mail($to, $emailSubject, $body, implode("\r\n", $headers));
 if ($sent) {
     echo json_encode(['ok' => true]);
 } else {
-    echo json_encode(['ok' => true, 'warning' => 'mail_failed']);
+    // Note: The existing account deletion endpoint returns ok:true even on mail failure
+    // to not block UX. For production, consider using ok:false or implement retry logic.
+    http_response_code(503); // Service Unavailable
+    echo json_encode(['ok' => false, 'error' => 'mail_failed']);
 }
 ```
 
