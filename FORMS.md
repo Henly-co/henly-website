@@ -293,7 +293,7 @@ if ($sent) {
     
     // Option B: Return proper error (recommended for new implementations)
     // This allows the frontend to handle failures more appropriately
-    http_response_code(503); // Service Unavailable
+    http_response_code(500); // Internal Server Error (mail function failed)
     echo json_encode(['ok' => false, 'error' => 'mail_failed']);
 }
 ```
@@ -499,7 +499,7 @@ This allows `/contact` and `/account-deletion` routes to work properly.
 5. Log all submissions to database for audit
 6. **Use configuration constants**: Define support email and other settings in a config file:
    ```php
-   // config.php
+   // public/api/config.php
    define('SUPPORT_EMAIL', 'info@henly.co');
    define('NOREPLY_EMAIL', 'noreply@henly.co');
    ```
