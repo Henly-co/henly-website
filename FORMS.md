@@ -288,12 +288,17 @@ $sent = @mail($to, $emailSubject, $body, implode("\r\n", $headers));
 if ($sent) {
     echo json_encode(['ok' => true]);
 } else {
-    // Note: The existing account deletion endpoint returns ok:true even on mail failure
-    // to not block UX. For production, consider using ok:false or implement retry logic.
+    // Option A: Match existing account deletion behavior (always return ok:true)
+    // echo json_encode(['ok' => true, 'warning' => 'mail_failed']);
+    
+    // Option B: Return proper error (recommended for new implementations)
+    // This allows the frontend to handle failures more appropriately
     http_response_code(503); // Service Unavailable
     echo json_encode(['ok' => false, 'error' => 'mail_failed']);
 }
 ```
+
+**Note**: The existing account deletion endpoint (Option A) returns `ok:true` even on mail failure to avoid blocking UX. For new implementations, Option B provides better error handling by returning proper error states. Choose based on your UX requirements.
 
 2. Update `ContactForm.tsx` to use the endpoint:
 
@@ -492,6 +497,48 @@ This allows `/contact` and `/account-deletion` routes to work properly.
 3. Implement CSRF tokens
 4. Add email verification step for account deletion
 5. Log all submissions to database for audit
+6. **Use configuration constants**: Define support email and other settings in a config file:
+   ```php
+   // config.php
+   define('SUPPORT_EMAIL', 'info@henly.co');
+   define('NOREPLY_EMAIL', 'noreply@henly.co');
+   ```
+   This makes maintenance easier when contact details need to change.
+
+## Configuration Best Practices
+
+For maintainability, consider creating a configuration file for common values:
+
+**`public/api/config.php`**:
+```php
+<?php
+// Email configuration
+define('SUPPORT_EMAIL', 'info@henly.co');
+define('NOREPLY_EMAIL', 'noreply@henly.co');
+
+// Rate limiting
+define('MAX_SUBMISSIONS_PER_HOUR', 5);
+
+// Response times
+define('TYPICAL_RESPONSE_DAYS', '7-14');
+define('ACCOUNT_DELETION_DAYS', 30);
+```
+
+Then include in your PHP endpoints:
+```php
+<?php
+require_once __DIR__ . '/config.php';
+
+$to = SUPPORT_EMAIL;
+$from = NOREPLY_EMAIL;
+// ... rest of code
+```
+
+This approach:
+- ✅ Centralizes configuration
+- ✅ Makes updates easier (change once, apply everywhere)
+- ✅ Reduces hardcoded values
+- ✅ Improves maintainability
 
 ## Future Enhancements
 
