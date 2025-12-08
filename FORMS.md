@@ -524,9 +524,10 @@ define('TYPICAL_RESPONSE_DAYS', '7-14');
 define('ACCOUNT_DELETION_DAYS', 30);
 ```
 
-Then include in your PHP endpoints:
+Then include in your PHP endpoints (e.g., `public/api/contact-form.php`):
 ```php
 <?php
+// Assuming both config.php and this endpoint are in public/api/ directory
 require_once __DIR__ . '/config.php';
 
 $to = SUPPORT_EMAIL;
