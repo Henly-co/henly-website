@@ -2,6 +2,13 @@
 
 Henly is Pakistan's Poultry Marketplace.
 
+**Technology Stack**: React 18 + Vite + TypeScript (NOT Next.js)
+
+## Documentation
+
+- **[FORMS.md](./FORMS.md)** - Comprehensive guide to how forms work in this website
+- **[SETUP.md](./SETUP.md)** - Setup and deployment instructions
+
 ## Development
 
 - Install deps: npm install
