@@ -5,8 +5,15 @@ import ContactForm from './components/ContactForm';
 import ContactInfo from './components/ContactInfo';
 import SEO from '../../components/SEO';
 
-export default function ContactUs() {
-  const [language, setLanguage] = useState<'en' | 'ur'>('en');
+type Language = 'en' | 'ur';
+
+interface Props {
+  language?: Language;
+  setLanguage?: React.Dispatch<React.SetStateAction<Language>>;
+}
+
+export default function ContactUs({ language: initialLanguage, setLanguage: initialSetLanguage }: Props) {
+  const [language, setLanguage] = useState<Language>(initialLanguage || 'en');
   const isUrdu = language === 'ur';
 
   return (

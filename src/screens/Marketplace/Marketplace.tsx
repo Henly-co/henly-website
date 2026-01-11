@@ -132,6 +132,13 @@ const illustrations = {
 	transporters: `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 400'><defs><linearGradient id='g5' x1='0%' y1='0%' x2='0%' y2='100%'><stop offset='0%' stop-color='%23fff'/><stop offset='100%' stop-color='%23f5f5f5'/></linearGradient></defs><rect width='500' height='400' fill='url(%23g5)'/><rect x='80' y='120' width='280' height='120' rx='12' fill='%23b22222' opacity='0.1' stroke='%23b22222' stroke-width='3'/><rect x='100' y='140' width='240' height='80' rx='8' fill='%23b22222' opacity='0.15'/><circle cx='150' cy='260' r='20' fill='%23b22222' opacity='0.2' stroke='%23b22222' stroke-width='2'/><circle cx='350' cy='260' r='20' fill='%23b22222' opacity='0.2' stroke='%23b22222' stroke-width='2'/><line x1='170' y1='280' x2='330' y2='280' stroke='%23b22222' stroke-width='3'/><text x='250' y='155' text-anchor='middle' font-family='Arial' font-size='16' fill='%23333' font-weight='700'>Temp Controlled</text><text x='250' y='310' text-anchor='middle' font-family='Arial' font-size='18' fill='%23333' font-weight='700'>Logistics Network</text></svg>`,
 };
 
+type Language = 'en' | 'ur';
+
+interface Props {
+  language?: Language;
+  setLanguage?: React.Dispatch<React.SetStateAction<Language>>;
+}
+
 type SectionImageAlignment = 'left' | 'right';
 
 interface MarketplaceSection {
@@ -150,8 +157,8 @@ interface MarketplaceSection {
 	illustration: string;
 }
 
-export default function Marketplace() {
-	const [language, setLanguage] = useState<'en' | 'ur'>('en');
+export default function Marketplace({ language: initialLanguage, setLanguage: initialSetLanguage }: Props) {
+	const [language, setLanguage] = useState<Language>(initialLanguage || 'en');
 	const isUrdu = language === 'ur';
 	const t = content[language];
 

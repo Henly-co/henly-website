@@ -5,8 +5,15 @@ import PrivacyPolicyContent from './components/PrivacyPolicyContent';
 import TableOfContents from './components/TableOfContents';
 import SEO from '../../components/SEO';
 
-export default function PrivacyPolicy() {
-  const [language, setLanguage] = useState<'en' | 'ur'>('en');
+type Language = 'en' | 'ur';
+
+interface Props {
+  language?: Language;
+  setLanguage?: React.Dispatch<React.SetStateAction<Language>>;
+}
+
+export default function PrivacyPolicy({ language: initialLanguage, setLanguage: initialSetLanguage }: Props) {
+  const [language, setLanguage] = useState<Language>(initialLanguage || 'en');
   const [activeSection, setActiveSection] = useState('introduction');
   const isUrdu = language === 'ur';
 

@@ -9,8 +9,15 @@ import MobileAppSection from './components/MobileAppSection';
 import AppScreenshotsSection from './components/AppScreenshotsSection';
 import SEO from '../../components/SEO';
 
-export default function HomePage() {
-  const [language, setLanguage] = useState<'en' | 'ur'>('en');
+type Language = 'en' | 'ur';
+
+interface Props {
+  language?: Language;
+  setLanguage?: React.Dispatch<React.SetStateAction<Language>>;
+}
+
+export default function HomePage({ language: initialLanguage, setLanguage: initialSetLanguage }: Props) {
+  const [language, setLanguage] = useState<Language>(initialLanguage || 'en');
 
   return (
     <div className="min-h-screen bg-white">

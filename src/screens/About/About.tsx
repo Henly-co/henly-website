@@ -3,8 +3,15 @@ import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import SEO from '../../components/SEO';
 
-export default function About() {
-  const [language, setLanguage] = useState<'en' | 'ur'>('en');
+type Language = 'en' | 'ur';
+
+interface Props {
+  language?: Language;
+  setLanguage?: React.Dispatch<React.SetStateAction<Language>>;
+}
+
+export default function About({ language: initialLanguage, setLanguage: initialSetLanguage }: Props) {
+  const [language, setLanguage] = useState<Language>(initialLanguage || 'en');
   const isUrdu = language === 'ur';
 
   return (

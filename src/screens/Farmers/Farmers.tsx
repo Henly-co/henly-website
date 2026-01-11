@@ -156,8 +156,15 @@ const heroImage = `data:image/svg+xml;utf8,
 	<text x='400' y='430' text-anchor='middle' font-family='Inter, Arial' font-size='22' font-weight='700' fill='%23b22222'>Poultry Farm — Broilers & Layers</text>
 </svg>`;
 
-export default function Farmers() {
-	const [language, setLanguage] = useState<'en' | 'ur'>('en');
+type Language = 'en' | 'ur';
+
+interface Props {
+  language?: Language;
+  setLanguage?: React.Dispatch<React.SetStateAction<Language>>;
+}
+
+export default function Farmers({ language: initialLanguage, setLanguage: initialSetLanguage }: Props) {
+	const [language, setLanguage] = useState<Language>(initialLanguage || 'en');
 	const isUrdu = language === 'ur';
 	const t = content[language];
 

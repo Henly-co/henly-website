@@ -100,8 +100,15 @@ const transporters = [
 
 const heroImage = 'https://images.unsplash.com/photo-1500595046743-cd271d694d30?auto=format&fit=crop&w=1400&q=80';
 
-export default function Transporters() {
-	const [language, setLanguage] = useState<'en' | 'ur'>('en');
+type Language = 'en' | 'ur';
+
+interface Props {
+  language?: Language;
+  setLanguage?: React.Dispatch<React.SetStateAction<Language>>;
+}
+
+export default function Transporters({ language: initialLanguage, setLanguage: initialSetLanguage }: Props) {
+	const [language, setLanguage] = useState<Language>(initialLanguage || 'en');
 	const isUrdu = language === 'ur';
 	const t = content[language];
 	const serviceLabelMap: Record<string, string> = {

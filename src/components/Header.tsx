@@ -2,7 +2,14 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 
-export default function Header() {
+type Language = 'en' | 'ur';
+
+interface Props {
+  language: Language;
+  setLanguage: React.Dispatch<React.SetStateAction<Language>>;
+}
+
+export default function Header({ language: _language, setLanguage: _setLanguage }: Props) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const toggleMenu = () => {
